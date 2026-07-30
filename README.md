@@ -21,15 +21,18 @@ frame-synchronous video authoring interface.
 
 ### Requirements
 
-- Python 3.8 or newer
-- A current desktop browser with JavaScript and WebGL support
-- macOS or Linux
+- Python 3.10 or newer (including the standard `venv` module)
+- Internet access on the first run to download the pinned Playwright package
+  and Chromium runtime
+- macOS
 
-The package was verified on macOS 26.4.1 with Chromium on July 30, 2026.
+The package was verified on macOS 26.4.1 with Playwright 1.61.0 and its
+pinned Chromium runtime on July 30, 2026.
 
-No Python packages, API keys, model downloads, network services, or GPU are
-required for the representative reproduction. The repository includes a
-compact demo video, prepared race data, and an authoring preset.
+No API keys, model downloads, external data services, or GPU are required.
+The repository includes a compact demo video, prepared race data, and an
+authoring preset. Dependencies are installed into an isolated
+`.grsi-venv` directory and do not modify the global Python environment.
 
 ### One-command reproduction
 
@@ -39,17 +42,19 @@ From the repository root, run:
 ./reproduce.sh
 ```
 
-The script validates the package, starts a local HTTP server, and opens
-SwimComposer in the default browser. The expected result is:
+The script validates the package, installs the pinned browser dependency,
+starts a local HTTP server, and runs SwimComposer in headless Chromium. It
+follows the real playback path into the recorded Tracking view at 12 seconds,
+pauses, and automatically writes:
 
-1. the page title is **SwimComposer**;
-2. the competition selector shows **Paris 2024 Men's 50m Freestyle Final**;
-3. the swimming video and the preconfigured visualization layers are visible;
-4. pressing **Play** advances the video and the frame-synchronous
-   visualizations.
+- `output/playwright/representative_result.png` — the reproduced visual result;
+- `output/playwright/reproduction_report.json` — the checked competition,
+  timeline state, canvas count, screenshot dimensions and hash, and browser
+  error summary.
 
-Keep the terminal open while using the system. Press `Ctrl+C` in the terminal
-to stop the local server.
+Successful completion prints both paths and exits with status 0. Missing
+assets, browser errors, failed requests, a non-advancing video, or a missing
+rendered canvas cause a nonzero exit status.
 
 ### Manual fallback
 
@@ -61,6 +66,9 @@ python3 -m http.server 8000
 ```
 
 Then visit <http://127.0.0.1:8000/>.
+
+This fallback is for interactive exploration only; `./reproduce.sh` is the
+automated representative-result reproduction required for stamp review.
 
 ## Reproduction Scope
 
@@ -92,10 +100,12 @@ interactive demo are included in
 ├── LICENSE
 ├── NOTICE.txt
 ├── SUBMISSION.txt
+├── requirements-reproduce.txt
 ├── setup.sh
 ├── reproduce.sh
 ├── scripts/
 │   ├── check_package.py
+│   ├── reproduce_result.py
 │   └── serve_swimcomposer.py
 ├── swimcomposer_sourcecode/       # interactive system and bundled demo
 └── data_pipeline_sourcecode/      # optional pipeline, including LLM materials

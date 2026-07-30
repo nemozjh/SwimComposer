@@ -12,6 +12,8 @@ PACKAGE_DIR = Path(__file__).resolve().parents[1]
 APP_DIR = PACKAGE_DIR / "swimcomposer_sourcecode"
 
 REQUIRED_FILES = (
+    PACKAGE_DIR / "requirements-reproduce.txt",
+    PACKAGE_DIR / "scripts" / "reproduce_result.py",
     APP_DIR / "index.html",
     APP_DIR / "src" / "app" / "main.js",
     APP_DIR / "libs" / "pixi.min.js",
@@ -39,9 +41,9 @@ JSON_FILES = tuple(path for path in REQUIRED_FILES if path.suffix == ".json")
 
 
 def main() -> int:
-    if sys.version_info < (3, 8):
+    if sys.version_info < (3, 10):
         print(
-            f"Error: Python 3.8+ is required; found {sys.version.split()[0]}.",
+            f"Error: Python 3.10+ is required; found {sys.version.split()[0]}.",
             file=sys.stderr,
         )
         return 1
@@ -71,7 +73,6 @@ def main() -> int:
         return 1
 
     print("SwimComposer reproducibility package check passed.")
-    print("No third-party Python packages are required for the interactive demo.")
     return 0
 
 

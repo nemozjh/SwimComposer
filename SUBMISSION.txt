@@ -15,14 +15,16 @@ Submission track:
 Visualization / Interaction
 
 Representative reproduction:
-Launch the bundled SwimComposer interactive system and its prepared swimming-race demo.
+Automatically play the bundled SwimComposer demo into its recorded Tracking
+view and capture a representative rendered result plus a machine-readable
+verification report.
 
 Supported operating systems:
 macOS 11 or newer
-Linux with Python 3.8 or newer and a desktop browser
 
 Verified configuration:
-macOS 26.4.1 with Chromium (July 30, 2026)
+macOS 26.4.1, Python 3.14.6, Playwright 1.61.0, and its pinned Chromium
+runtime (July 30, 2026)
 
 Required non-standard hardware:
 None for the representative reproduction
