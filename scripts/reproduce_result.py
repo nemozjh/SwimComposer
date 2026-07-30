@@ -120,11 +120,14 @@ def reproduce() -> dict[str, Any]:
             # application of the authored view-mode preset.
             page.locator("#btn-play").click()
             page.wait_for_function(
-                """targetLabel => {
+                """() => {
                     const label = document.querySelector('#video-time-label');
-                    return label && label.textContent.trim().startsWith(targetLabel);
+                    const activeMode = document.querySelector('.view-tab.is-active');
+                    const match = label?.textContent.match(/^00:(\\d{2})/);
+                    const seconds = match ? Number(match[1]) : -1;
+                    return seconds >= 12 && seconds < 14 &&
+                        activeMode?.textContent.trim() === 'Tracking';
                 }""",
-                arg="00:12",
                 timeout=25_000,
             )
             page.locator("#btn-play").click()
@@ -149,6 +152,10 @@ def reproduce() -> dict[str, Any]:
             raise RuntimeError(f"Unexpected page title: {title!r}")
         if canvas_count < 1:
             raise RuntimeError("No rendered SwimComposer canvas was found")
+        if view_mode.strip() != "Tracking":
+            raise RuntimeError(
+                f"Unexpected representative view mode: {view_mode!r}"
+            )
         if console_errors or page_errors or failed_requests:
             raise RuntimeError(
                 "The browser reported errors; inspect reproduction_report.json"

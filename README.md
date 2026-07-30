@@ -44,8 +44,8 @@ From the repository root, run:
 
 The script validates the package, installs the pinned browser dependency,
 starts a local HTTP server, and runs SwimComposer in headless Chromium. It
-follows the real playback path into the recorded Tracking view at 12 seconds,
-pauses, and automatically writes:
+follows the real playback path into the recorded Tracking segment between
+12 and 14 seconds, pauses, and automatically writes:
 
 - `output/playwright/representative_result.png` — the reproduced visual result;
 - `output/playwright/reproduction_report.json` — the checked competition,
