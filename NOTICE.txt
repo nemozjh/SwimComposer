@@ -1,0 +1,33 @@
+SwimComposer third-party and media notice
+==========================================
+
+The MIT License in LICENSE applies to the original SwimComposer source code
+and documentation created by the SwimComposer authors.
+
+Bundled open-source libraries
+-----------------------------
+
+- PixiJS 6.5.8 is distributed under the MIT License.
+  Source: https://github.com/pixijs/pixijs
+- pixi-projection 0.4.3 is distributed under the MIT License.
+  Copyright 2019-2020 Ivan Popelyshev.
+  Source: https://github.com/pixijs-userland/projection
+
+The original copyright and license notices are retained in the bundled
+JavaScript files. Each optional Python pipeline dependency remains subject to
+the license published by its respective project.
+
+Demo video and visual assets
+----------------------------
+
+The authors confirm that the demonstration video and visual assets included in
+this repository are distributed with authorization for this
+research-software and replicability package. These materials are not
+relicensed under the MIT License unless an individual file or its accompanying
+documentation explicitly says otherwise.
+
+Paper and publisher material
+----------------------------
+
+The IEEE paper, publisher-formatted material, conference marks, and third-party
+trademarks are not covered by the software's MIT License.

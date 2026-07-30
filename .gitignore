@@ -1,0 +1,17 @@
+.DS_Store
+__MACOSX/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.log
+.playwright-cli/
+output/
+
+# Source folders are authoritative; paper-submission archives are redundant
+# in a standalone public Git repository.
+*.zip
+
+# Legacy duplicate copies retained for the original paper-supplement package.
+/LLM-SKILL/
+/offical metadata collecting/

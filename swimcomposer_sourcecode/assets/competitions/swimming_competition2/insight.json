@@ -1,0 +1,24 @@
+{
+  "video": {
+    "id": "cut_2250_3298",
+    "fps": 50
+  },
+  "segments": [
+    {
+      "start_sec": 12.64,
+      "end_sec": 16.12,
+      "text": "TEST ID 4 powered into the lead.",
+      "leader_id": 4
+    },
+    {
+      "start_sec": 20.12,
+      "end_sec": 21.9,
+      "text": "RESULT TEST.",
+      "results": {
+        "gold": 4,
+        "silver": 5,
+        "bronze": 1
+      }
+    }
+  ]
+}

@@ -1,0 +1,3753 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SwimComposer</title>
+  <style>
+    :root {
+      
+      --bg: #F5F5F7;
+      
+      --panel: rgba(255, 255, 255, 0.65);
+      
+      --panel-2: rgba(255, 255, 255, 0.85);
+      
+      --panel-3: rgba(255, 255, 255, 0.95);
+      --line: rgba(0, 0, 0, 0.08);
+      
+      --line-strong: rgba(0, 0, 0, 0.15);
+      --accent: #3478F6;
+      
+      --accent-soft: rgba(52, 120, 246, 0.10);
+      --text: #1D1D1F;
+      
+      --text-1: #1D1D1F;
+      
+      --text-2: #424245;
+      
+      --text-3: #86868B;
+      
+      --text-4: #86868B;
+      
+      --text-5: #AEAEB2;
+      
+      --shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      
+      --r-sm: 8px;
+      --r-md: 14px;
+      --r-lg: 20px;
+      --pill: 999px;
+      --left-col: clamp(260px, 20vw, 320px);
+      --right-col: clamp(300px, 24vw, 380px);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+    }
+
+    *::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    *::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.15);
+      border-radius: 999px;
+      border: 2px solid transparent;
+      background-clip: content-box;
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 0, 0, 0.25);
+      background-clip: content-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text-2);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow-x: auto;
+      overflow-y: auto;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background-image: radial-gradient(circle at top right, rgba(200, 200, 225, 0.4), transparent 40%), radial-gradient(circle at bottom left, rgba(230, 230, 240, 0.6), transparent 50%);
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .is-hidden {
+      display: none !important;
+    }
+
+    #app {
+      min-height: 100vh;
+      height: auto;
+      display: grid;
+      grid-template-rows: 48px auto;
+      background: var(--bg);
+    }
+
+    
+
+    .app-header {
+      display: grid;
+      grid-template-columns: var(--left-col) minmax(0, 1fr);
+      align-items: center;
+      background: var(--panel);
+      backdrop-filter: blur(40px) saturate(180%);
+      -webkit-backdrop-filter: blur(40px) saturate(180%);
+      border-bottom: 0.5px solid var(--line);
+      z-index: 100;
+      box-shadow: 0 1px 10px rgba(0, 0, 0, 0.02);
+    }
+
+    .brand-block {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 16px;
+      border-right: 1px solid var(--line);
+      overflow: hidden;
+    }
+
+    .brand-icon {
+      display: block;
+      height: 34px;
+      width: auto;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .brand-name {
+      color: var(--text-1);
+      font-size: 19px;
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      white-space: nowrap;
+    }
+
+    .header-main {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 6px 16px;
+      min-width: 0;
+    }
+
+    .competition-picker {
+      min-width: 280px;
+      max-width: 520px;
+      height: 35px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: var(--r-md);
+      background: rgba(0, 0, 0, 0.04);
+      color: var(--text-1);
+      box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.05);
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+
+    .competition-picker:hover {
+      background: rgba(0, 0, 0, 0.08);
+      box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.1);
+    }
+
+    .competition-picker .picker-copy {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1px;
+    }
+
+    .competition-picker label {
+      margin: 0;
+      color: var(--text-4);
+      font-size: 10px;
+      line-height: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .competition-select {
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      background: transparent;
+      color: var(--accent);
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 19px;
+      padding: 0;
+      appearance: none;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .picker-chevron {
+      color: var(--text-3);
+      font-size: 13px;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .ghost-button,
+    .play-btn,
+    .camera-btn,
+    .icon-btn,
+    .btn-close-settings {
+      border: 1px solid transparent;
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--text-2);
+      border-radius: var(--pill);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all .2s cubic-bezier(0.25, 0.1, 0.25, 1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .camera-btn {
+      border-radius: var(--pill);
+    }
+
+    .icon-btn {
+      border-radius: 50%;
+    }
+
+    .ghost-button:hover,
+    .play-btn:hover,
+    .icon-btn:hover,
+    .btn-close-settings:hover {
+      background: rgba(0, 0, 0, 0.08);
+      color: var(--text-1);
+    }
+
+    .ghost-button:active,
+    .play-btn:active,
+    .icon-btn:active,
+    .btn-close-settings:active {
+      transform: scale(0.96);
+    }
+
+    .ghost-button {
+      height: 32px;
+      padding: 0 13px;
+      font-size: 12px;
+      line-height: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+      box-sizing: border-box;
+    }
+
+    .ghost-button.full {
+      width: 100%;
+    }
+
+    .help-btn {
+      min-width: 70px;
+      justify-content: center;
+    }
+
+    .app-main {
+      min-height: calc(100vh - 48px);
+      display: grid;
+      grid-template-columns: var(--left-col) minmax(620px, 1fr) var(--right-col);
+      gap: 0;
+      align-items: start;
+    }
+
+    .left-panel,
+    .right-panel {
+      min-height: calc(100vh - 48px);
+      background: var(--panel);
+      backdrop-filter: blur(40px) saturate(180%);
+      -webkit-backdrop-filter: blur(40px) saturate(180%);
+      border-right: 0.5px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      align-self: start;
+    }
+
+    .right-panel {
+      border-right: 0;
+      border-left: 0.5px solid var(--line);
+      position: relative;
+    }
+
+    .panel-scroller {
+      min-height: 0;
+      overflow: visible;
+    }
+
+    .left-heading {
+      height: 50px;
+      padding: 16px;
+      border-bottom: 0.5px solid var(--line);
+      color: var(--text-4);
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .sidebar {
+      width: 100%;
+      background: transparent;
+      padding: 12px 8px;
+      box-shadow: none;
+      border-radius: 0;
+      font-size: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .sidebar-section {
+      padding: 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .sidebar-section:last-child {
+      border-bottom: 0;
+    }
+
+    .sidebar-section.camera-section {
+      display: none;
+    }
+
+    .sidebar h3,
+    .dg-title {
+      margin: 0;
+      padding: 8px 12px;
+      color: var(--text-3);
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .dg-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+      appearance: none;
+      font-family: inherit;
+      border: 0;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .dg-title::before {
+      content: "";
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      background: url("assets/figma-icons/sidebar-group-caret.svg") center/15px 15px no-repeat;
+      opacity: .92;
+      transition: transform .15s ease, opacity .15s ease;
+    }
+
+    .dg-title:hover {
+      color: var(--text-1);
+      background: rgba(0, 0, 0, 0.03);
+      border-radius: var(--r-sm);
+    }
+
+    .data-group.is-collapsed .dg-title::before {
+      transform: rotate(-90deg);
+      opacity: .72;
+    }
+
+    .data-group.is-collapsed .chip-grid {
+      display: none;
+    }
+
+    .data-groups {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-bottom: 8px;
+    }
+
+    .data-group {
+      background: transparent;
+      border: 0;
+      border-radius: var(--r-md);
+      padding: 0;
+      margin: 0 8px;
+    }
+
+    .chip-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .chip {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: var(--text-2);
+      border-radius: var(--r-md);
+      padding: 8px 12px;
+      margin-bottom: 2px;
+      min-height: 38px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 500;
+      position: relative;
+      transition: background 0.2s, color 0.2s, transform 0.15s ease;
+    }
+
+    .chip:hover {
+      transform: translateX(2px);
+    }
+
+    .chip::before {
+      display: none;
+    }
+
+    .chip.active {
+      background: rgba(0, 0, 0, 0.06);
+      color: var(--text-1);
+      font-weight: 600;
+      box-shadow: none;
+    }
+
+    .chip:hover:not(.active) {
+      background: rgba(0, 0, 0, 0.03);
+      color: var(--text-1);
+    }
+
+    .chip.active:hover {
+      background: rgba(0, 0, 0, 0.09);
+    }
+
+    .chip-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .chip-main {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .chip-label {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .chip-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      display: inline-grid;
+      place-items: center;
+      color: currentColor;
+      opacity: 0.92;
+    }
+
+    .chip-icon svg {
+      width: 16px;
+      height: 16px;
+      display: block;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .chip-icon img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+    }
+
+    .chip-icon-stack {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .chip-icon-layer {
+      position: absolute;
+      display: block;
+    }
+
+    .chip-icon-layer--base {
+      inset: 12.5%;
+    }
+
+    .chip-icon-layer--overlay {
+      inset: 16.67% 8.33% 41.67% 37.5%;
+    }
+
+    .chip-icon-layer>img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .chip:not(.active) .chip-icon {
+      opacity: .6;
+    }
+
+    .chip.active .chip-icon {
+      color: var(--accent);
+    }
+
+    .chip-toggle {
+      width: 16px;
+      height: 16px;
+      border-radius: var(--pill);
+      border: 1.5px solid rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 0.6);
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      flex-shrink: 0;
+      position: relative;
+      transition: all 0.2s;
+    }
+
+    .chip:hover .chip-toggle {
+      border-color: rgba(0, 0, 0, 0.3);
+    }
+
+    .chip.active .chip-toggle {
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: none;
+    }
+
+    .chip.is-selected {
+      box-shadow: inset 0 0 0 1px rgba(41, 121, 255, .25);
+    }
+
+    .chip-gear {
+      width: 20px;
+      height: 20px;
+      border-radius: var(--pill);
+      border: 0;
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--text-2);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    .chip-gear:hover {
+      background: rgba(0, 0, 0, 0.1);
+      color: var(--text-1);
+    }
+
+    .export-render-cancel:hover {
+      background: rgba(0, 0, 0, 0.08);
+      color: var(--text-1);
+    }
+
+    .info-panels {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px 12px 12px;
+    }
+
+    .info-box {
+      background: rgba(0, 0, 0, 0.02);
+      border: 1px solid var(--line);
+      border-radius: var(--r-md);
+      padding: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+      min-height: 60px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    }
+
+    .info-box h4 {
+      margin: 0 0 6px;
+      color: var(--text-3);
+      font-size: 11px;
+      line-height: 16px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .info-box .muted {
+      color: var(--text-4);
+    }
+
+    #awards-box {
+      display: none;
+    }
+
+    .awards-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .awards-list li {
+      background: rgba(0, 0, 0, 0.02);
+      border: 1px solid var(--line);
+      border-radius: var(--r-sm);
+      padding: 6px;
+    }
+
+    .awards-list .ath-name {
+      color: var(--text-1);
+      font-weight: 700;
+    }
+
+    .awards-list .ath-meta {
+      color: var(--text-3);
+    }
+
+    .awards-list .ath-awards {
+      color: #34c759;
+    }
+
+    .awards-list .ath-empty {
+      color: var(--text-4);
+      font-style: italic;
+    }
+
+    .center-column {
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: 50px auto minmax(160px, auto);
+      background: var(--bg);
+      align-self: start;
+    }
+
+    .mode-bar {
+      border-bottom: 0.5px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 56px;
+      min-height: 56px;
+      padding: 0 16px;
+      background: var(--panel-2);
+      backdrop-filter: blur(40px) saturate(180%);
+      -webkit-backdrop-filter: blur(40px) saturate(180%);
+      position: relative;
+    }
+
+    .mode-left {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      padding: 0 72px;
+    }
+
+    .mode-label {
+      color: var(--text-4);
+      font-size: 12px;
+      line-height: 17px;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: .09em;
+      white-space: nowrap;
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .mode-tabs {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      padding: 4px;
+      border-radius: var(--pill);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      background: rgba(0, 0, 0, 0.04);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
+      margin: 0 auto;
+    }
+
+    .view-tab {
+      height: 30px;
+      min-width: 100px;
+      padding: 0 14px;
+      border-radius: var(--pill);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-2);
+      font-weight: 500;
+      cursor: pointer;
+      font-size: 13px;
+      line-height: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      transition: all .2s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    .view-tab:hover {
+      color: var(--text-1);
+    }
+
+    .view-tab.is-active {
+      background: var(--text-1);
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .mode-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .shot-switch {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .shot-switch-label {
+      color: var(--text-4);
+      font-size: 11px;
+      line-height: 16px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .shot-controls {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .shot-controls .camera-btn {
+      height: 26px;
+      min-width: 56px;
+      padding: 0 10px;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .camera-btn {
+      height: 32px;
+      padding: 0 12px;
+      font-size: 12px;
+      line-height: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border-radius: var(--r-sm);
+      min-width: 82px;
+    }
+
+    .camera-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(52, 120, 246, 0.2);
+    }
+
+    #btn-view-comparison[disabled] {
+      opacity: .55;
+      cursor: default;
+    }
+
+    .icon-btn {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border-radius: var(--r-sm);
+      font-size: 13px;
+    }
+
+    .workspace {
+      min-height: 0;
+      display: block;
+      background: var(--bg);
+    }
+
+    .canvas-stage {
+      min-height: 0;
+      padding: 0;
+      position: relative;
+      background: var(--bg);
+      box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.03);
+    }
+
+    .canvas-row {
+      height: auto;
+      display: flex;
+      align-items: flex-start;
+      justify-content: stretch;
+      padding: 0;
+    }
+
+    .layer-settings-wrapper {
+      width: 100%;
+      margin: 0;
+      display: flex !important;
+      position: static;
+      left: auto;
+      top: auto;
+      z-index: auto;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 0;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    #app.right-panel-surface--mode #right-panel-mode-content {
+      display: block;
+    }
+
+    #app.right-panel-surface--mode #layer-settings-flyout {
+      display: none !important;
+    }
+
+    #app.right-panel-surface--layer #right-panel-mode-content {
+      display: none;
+    }
+
+    #app.right-panel-surface--layer #layer-settings-flyout {
+      display: flex !important;
+    }
+
+    .layer-settings-wrapper .sidebar-section {
+      border: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      height: auto;
+    }
+
+    .right-panel .panel-header-top {
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid var(--line);
+      flex-shrink: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .right-panel .panel-header-text {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .right-panel .panel-title-static {
+      color: var(--text-1);
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .right-panel .panel-title-live {
+      margin-top: 4px;
+      color: var(--text-4);
+      font-size: 12px;
+      line-height: 17px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .layer-settings-wrapper .panel-header {
+      display: none;
+    }
+
+    .btn-close-settings {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 10px;
+      height: 28px;
+      font-size: 11px;
+      line-height: 16px;
+      border-radius: var(--r-sm);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .panel-mode-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: auto;
+      height: 28px;
+      padding: 0 10px;
+      border-radius: var(--pill);
+      font-size: 11px;
+      line-height: 16px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    #app.right-panel-surface--mode.view-mode-comparison .panel-mode-toggle {
+      display: inline-flex;
+    }
+
+    #app.right-panel-surface--mode .btn-close-settings {
+      display: none;
+    }
+
+    .layer-settings-wrapper .control-panel,
+    #control-panel.control-panel {
+      margin-top: 0;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 0;
+      min-height: 0;
+      overflow: visible;
+      flex: 0 0 auto;
+    }
+
+    .section {
+      margin: 0;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+    }
+
+    .section h5 {
+      margin: 0 0 8px;
+      color: var(--text-5);
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 8px;
+    }
+
+    .section-heading h5 {
+      margin: 0;
+    }
+
+    .section-heading-control {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .section-heading-control span {
+      color: var(--text-4);
+      font-size: 10px;
+      line-height: 14px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .section-heading-control select {
+      min-width: 108px;
+      padding: 4px 24px 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--text-2);
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 600;
+    }
+
+    .rep-pills {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 4px;
+    }
+
+    .pill {
+      height: 38px;
+      border-radius: var(--pill);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      background: rgba(0, 0, 0, 0.03);
+      color: var(--text-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 12px;
+      line-height: 16px;
+      cursor: pointer;
+      padding: 0 8px;
+    }
+
+    .pill.active {
+      background: #ffffff;
+      border-color: rgba(0, 0, 0, 0.1);
+      color: var(--accent);
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .field {
+      display: grid;
+      grid-template-columns: minmax(70px, auto) minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 6px;
+      margin: 6px 0;
+      color: var(--text-3);
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .field>span {
+      color: var(--text-3);
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: .08em;
+      font-weight: 600;
+    }
+
+    .field em,
+    .field output {
+      justify-self: end;
+      color: var(--text-2);
+      font-size: 11px;
+      line-height: 16px;
+      font-style: normal;
+      white-space: nowrap;
+    }
+
+    .field input[type="checkbox"] {
+      justify-self: end;
+      width: 44px;
+      height: 24px;
+      appearance: none;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: var(--pill);
+      position: relative;
+      outline: none;
+      cursor: pointer;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: background 0.3s;
+    }
+
+    .field input[type="checkbox"]::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    .field input[type="checkbox"]:checked {
+      background: var(--accent);
+      
+    }
+
+    .field input[type="checkbox"]:checked::after {
+      transform: translateX(20px);
+    }
+
+    .field input[type="color"] {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      background: transparent;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .field input[type="range"] {
+      width: 100%;
+      margin: 0;
+      accent-color: var(--accent);
+      height: 6px;
+      border-radius: var(--pill);
+      background: rgba(0, 0, 0, 0.08);
+      outline: none;
+      appearance: none;
+    }
+
+    .field input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+    }
+
+    .field select {
+      width: 100%;
+      min-width: 0;
+      height: 30px;
+      padding: 0 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--text-1);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6);
+      appearance: none;
+    }
+
+    .rep-props {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+
+    .rep-props .field {
+      margin: 2px 0;
+    }
+
+    .rep-props .field>span {
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 11px;
+      color: var(--text-3);
+    }
+
+    .rep-props .field[data-control-type="color"]>span {
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--text-4);
+    }
+
+    .rep-style-note {
+      margin-top: 8px;
+      color: var(--text-4);
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .style-editor {
+      width: 100%;
+      min-height: 92px;
+      resize: vertical;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--line);
+      background: rgba(0, 0, 0, 0.03);
+      color: var(--text-1);
+      font-size: 12px;
+      line-height: 18px;
+      padding: 8px 10px;
+      box-sizing: border-box;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .style-editor::placeholder {
+      color: var(--text-4);
+    }
+
+    .style-editor-help {
+      margin: 6px 0 8px;
+      color: var(--text-4);
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .style-editor-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .style-editor-actions>.ghost-button {
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      padding: 0 10px;
+    }
+
+    .layer-settings-wrapper .control-panel>.ghost-button.full {
+      width: calc(100% - 24px);
+      max-width: calc(100% - 24px);
+      margin: 10px 12px 0;
+      box-sizing: border-box;
+    }
+
+    .layer-settings-wrapper .control-panel>.ghost-button.full:last-child {
+      margin-bottom: 12px;
+    }
+
+    .lanes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .lane-chip {
+      min-width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      background: transparent;
+      color: var(--text-4);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .02em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0 8px;
+    }
+
+    .lane-chip.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    #btn-save-default,
+    #btn-import-settings,
+    #btn-clear-default {
+      margin: 16px;
+    }
+
+    #btn-save-default,
+    #btn-import-settings,
+    #btn-clear-default {
+      height: 32px;
+      border-radius: var(--r-sm);
+      font-size: 12px;
+      color: var(--text-3);
+      border-color: var(--line);
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    .right-panel-mode-content {
+      min-height: 0;
+      overflow: visible;
+      flex: 0 0 auto;
+    }
+
+    .mode-panel {
+      display: none;
+      min-height: 0;
+    }
+
+    .mode-panel.mode-panel--active {
+      display: block;
+    }
+
+    .mode-panel .mode-section {
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .mode-panel .mode-section:last-child {
+      border-bottom: 0;
+    }
+
+    .mode-panel .mode-section-title {
+      color: var(--text-5);
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .mode-panel .mode-section-copy {
+      color: var(--text-4);
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .mode-choice-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mode-choice-grid.cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mode-choice {
+      min-height: 80px;
+      border-radius: var(--r-md);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      background: rgba(255, 255, 255, 0.7);
+      color: var(--text-2);
+      cursor: pointer;
+      padding: 12px 10px;
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 500;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 10px;
+      transition: all .2s cubic-bezier(0.25, 0.1, 0.25, 1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .mode-choice:hover {
+      border-color: rgba(0, 0, 0, 0.1);
+      background: #ffffff;
+      color: var(--text-1);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    }
+
+    .mode-choice.active {
+      border-color: var(--accent);
+      background: #ffffff;
+      color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent) inset, 0 6px 20px rgba(52, 120, 246, .12);
+    }
+
+    .mode-choice::before {
+      content: none;
+      display: none;
+    }
+
+    .mode-choice-icon {
+      width: 22px;
+      height: 22px;
+      display: inline-grid;
+      place-items: center;
+      flex-shrink: 0;
+      --stroke-0: var(--text-3);
+      overflow: hidden;
+      contain: paint;
+    }
+
+    .mode-choice.active .mode-choice-icon {
+      --stroke-0: var(--accent);
+    }
+
+    .mode-choice-icon img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      object-position: center;
+    }
+
+    .mode-choice-label {
+      display: block;
+      min-width: 0;
+      line-height: 1.2;
+    }
+
+    .mode-choice[data-track-transition="hardcut"]::before {
+      content: "✂";
+    }
+
+    .mode-choice[data-track-transition="zoomlens"]::before {
+      content: "⌕";
+    }
+
+    .mode-choice[data-track-transition="dissolve"]::before {
+      content: "≈";
+    }
+
+    .mode-choice[data-track-transition="wipe"]::before {
+      content: "⇢";
+    }
+
+    .mode-choice[data-track-highlight-style="standard"]::before {
+      content: "◻";
+    }
+
+    .mode-choice[data-track-highlight-style="spotlight"]::before {
+      content: "✦";
+    }
+
+    .mode-choice[data-track-highlight-style="edgebracket"]::before {
+      content: "[ ]";
+    }
+
+    .mode-choice[data-track-highlight-style="blur"]::before {
+      content: "◌";
+    }
+
+    .mode-choice[data-comparison-layout="sideBySide"]::before {
+      content: "▥";
+    }
+
+    .mode-choice[data-comparison-layout="overlay"]::before {
+      content: "⧉";
+    }
+
+    .mode-segment-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .mode-segment {
+      min-height: 32px;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--line);
+      background: rgba(0, 0, 0, 0.02);
+      color: var(--text-3);
+      font-size: 12px;
+      line-height: 17px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 12px;
+      transition: background .15s ease, border-color .15s ease, color .15s ease;
+    }
+
+    .mode-segment::before {
+      content: none;
+      display: none;
+    }
+
+    .mode-segment-icon {
+      width: 14px;
+      height: 14px;
+      display: inline-grid;
+      place-items: center;
+      flex-shrink: 0;
+      --stroke-0: var(--text-3);
+      overflow: hidden;
+      contain: paint;
+    }
+
+    .mode-segment-icon img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      object-position: center;
+    }
+
+    .mode-segment[data-track-behavior="follow"]::before {
+      content: "◎";
+    }
+
+    .mode-segment[data-track-behavior="pan"]::before {
+      content: "↔";
+    }
+
+    .mode-segment.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .mode-segment:not(.active) .mode-segment-icon {
+      opacity: .72;
+    }
+
+    .mode-segment.active .mode-segment-icon {
+      --stroke-0: var(--accent);
+    }
+
+    .mode-range-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mode-range-row input[type="range"] {
+      width: 100%;
+      margin: 0;
+      accent-color: var(--accent);
+      height: 5px;
+    }
+
+    .mode-range-value {
+      color: var(--accent);
+      font-size: 11px;
+      line-height: 16px;
+      white-space: nowrap;
+    }
+
+    .mode-collapsible {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .mode-collapsible-toggle {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: var(--text-3);
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .mode-collapsible-toggle .caret {
+      color: var(--text-4);
+      font-size: 11px;
+      transition: transform .15s ease;
+    }
+
+    .mode-collapsible.expanded .mode-collapsible-toggle .caret {
+      transform: rotate(180deg);
+    }
+
+    .mode-collapsible-body {
+      display: none;
+      gap: 4px;
+      flex-direction: column;
+    }
+
+    .mode-collapsible.expanded .mode-collapsible-body {
+      display: flex;
+    }
+
+    .comparison-settings-collapsible {
+      gap: 0;
+    }
+
+    .comparison-settings-body {
+      gap: 0;
+    }
+
+    .comparison-settings-collapsible:not(.expanded) .comparison-settings-body {
+      display: none;
+    }
+
+    .mode-athlete-row {
+      min-height: 34px;
+      border-radius: var(--r-sm);
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-3);
+      font-size: 13px;
+      line-height: 19px;
+      background: rgba(0, 0, 0, 0.02);
+      border: 1px solid var(--line);
+    }
+
+    .mode-athlete-row.is-selected {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .mode-inline-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 34px;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--line);
+      background: rgba(0, 0, 0, 0.02);
+      padding: 0 10px;
+      color: var(--text-3);
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .mode-inline-toggle span {
+      min-width: 0;
+      color: var(--text-2);
+    }
+
+    .mode-inline-toggle input[type="checkbox"] {
+      width: 44px;
+      height: 24px;
+      appearance: none;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: var(--pill);
+      position: relative;
+      outline: none;
+      cursor: pointer;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: background 0.3s;
+      margin: 0;
+      flex-shrink: 0;
+    }
+
+    .mode-inline-toggle input[type="checkbox"]::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    .mode-inline-toggle input[type="checkbox"]:checked {
+      background: var(--accent);
+    }
+
+    .mode-inline-toggle input[type="checkbox"]:checked::after {
+      transform: translateX(20px);
+    }
+
+    .comparison-live-data-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px;
+      border-radius: var(--r-md);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      background: var(--panel-3);
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+    }
+
+    .comparison-live-data-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .comparison-live-data-metric {
+      color: var(--text-1);
+      font-size: 12px;
+      line-height: 17px;
+      font-weight: 600;
+      letter-spacing: .02em;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .comparison-live-data-status {
+      color: var(--text-3);
+      font-size: 11px;
+      line-height: 16px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .comparison-live-data-canvas-wrap {
+      position: relative;
+      border-radius: var(--r-sm);
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78);
+      overflow: hidden;
+      min-height: 144px;
+    }
+
+    .comparison-live-data-canvas {
+      width: 100%;
+      height: 144px;
+      display: block;
+    }
+
+    .comparison-live-data-empty {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      color: var(--text-3);
+      font-size: 12px;
+      line-height: 17px;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .comparison-live-data-empty.is-hidden {
+      display: none;
+    }
+
+    #canvas-container {
+      position: relative;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      max-width: 100%;
+      background: #000;
+      overflow: hidden;
+      box-shadow: none;
+      border-radius: 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    #comparison-selection-frame {
+      position: absolute;
+      inset: 0;
+      border-radius: 0;
+      pointer-events: none;
+      z-index: 90;
+      display: none;
+      opacity: 0;
+      transition: opacity .16s ease;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+        inset 0 0 56px rgba(255, 255, 255, 0.06);
+    }
+
+    #comparison-selection-frame::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow:
+        inset 0 4px 0 rgba(255, 255, 255, 0.32),
+        inset 0 -4px 0 rgba(255, 255, 255, 0.20),
+        inset 4px 0 0 rgba(255, 255, 255, 0.20),
+        inset -4px 0 0 rgba(255, 255, 255, 0.26),
+        inset 0 0 26px rgba(255, 255, 255, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.08);
+      opacity: .7;
+      animation: comparison-breathe 1.8s ease-in-out infinite;
+    }
+
+    #comparison-selection-frame.is-active {
+      opacity: 1;
+    }
+
+    @keyframes comparison-breathe {
+
+      0%,
+      100% {
+        opacity: .38;
+        box-shadow:
+          inset 0 3px 0 rgba(255, 255, 255, 0.24),
+          inset 0 -3px 0 rgba(255, 255, 255, 0.14),
+          inset 3px 0 0 rgba(255, 255, 255, 0.14),
+          inset -3px 0 0 rgba(255, 255, 255, 0.20),
+          inset 0 0 18px rgba(255, 255, 255, 0.08),
+          0 0 0 1px rgba(255, 255, 255, 0.05);
+      }
+
+      50% {
+        opacity: 1;
+        box-shadow:
+          inset 0 8px 0 rgba(255, 255, 255, 0.75),
+          inset 0 -8px 0 rgba(255, 255, 255, 0.42),
+          inset 8px 0 0 rgba(255, 255, 255, 0.42),
+          inset -8px 0 0 rgba(255, 255, 255, 0.62),
+          inset 0 0 42px rgba(255, 255, 255, 0.18),
+          0 0 26px rgba(255, 255, 255, 0.18);
+      }
+    }
+
+    #btn-comparison-confirm {
+      position: absolute;
+      right: 14px;
+      bottom: 14px;
+      height: 34px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+    }
+
+    #btn-comparison-confirm.is-visible {
+      display: inline-flex;
+    }
+
+    #btn-comparison-confirm:hover:not(:disabled) {
+      background: rgba(41, 121, 255, 0.24);
+      border-color: rgba(41, 121, 255, .6);
+      color: #d7e7ff;
+    }
+
+    #btn-comparison-confirm:disabled {
+      opacity: .45;
+      cursor: default;
+      color: var(--text-4);
+    }
+
+    #canvas-container canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+    }
+
+    #export-render-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 140;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      background: rgba(2, 6, 12, 0.36);
+      backdrop-filter: blur(2px);
+    }
+
+    #export-render-overlay.is-visible {
+      display: flex;
+    }
+
+    .export-render-card {
+      min-width: 240px;
+      max-width: min(88%, 360px);
+      border-radius: var(--r-lg);
+      border: 0.5px solid var(--line);
+      background: var(--panel-3);
+      backdrop-filter: blur(40px) saturate(180%);
+      -webkit-backdrop-filter: blur(40px) saturate(180%);
+      box-shadow: var(--shadow);
+      padding: 14px 16px 12px;
+      color: var(--text-1);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .export-render-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .export-render-spinner {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-top-color: rgba(255, 255, 255, 0.95);
+      animation: export-spin .8s linear infinite;
+      flex: 0 0 auto;
+    }
+
+    .export-render-copy {
+      font-size: 11px;
+      line-height: 16px;
+      color: var(--text-3);
+    }
+
+    .export-render-progress-wrap {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+
+    .export-render-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #38bdf8, #2563eb);
+      transition: width .08s linear;
+    }
+
+    .export-render-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 11px;
+      color: var(--text-2);
+    }
+
+    .export-render-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      pointer-events: auto;
+    }
+
+    .export-render-cancel {
+      min-width: 72px;
+      height: 30px;
+      border: 1px solid var(--line);
+      border-radius: var(--pill);
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--text-2);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: background .15s ease, border-color .15s ease, color .15s ease, opacity .15s ease;
+    }
+
+    .export-render-cancel:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .under-video {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 16px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0));
+      pointer-events: none;
+      z-index: 35;
+    }
+
+    .under-video>* {
+      pointer-events: auto;
+    }
+
+    .play-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      font-size: 0;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .play-btn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: var(--text-1);
+      -webkit-mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='currentColor' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='5,2.5 13,8 5,13.5'/%3E%3C/svg%3E") center/14px no-repeat;
+      mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='currentColor' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='5,2.5 13,8 5,13.5'/%3E%3C/svg%3E") center/14px no-repeat;
+    }
+
+    .play-btn.is-playing::before {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='currentColor' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='3' y='2' width='3.5' height='12' rx='1'/%3E%3Crect x='9.5' y='2' width='3.5' height='12' rx='1'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='currentColor' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='3' y='2' width='3.5' height='12' rx='1'/%3E%3Crect x='9.5' y='2' width='3.5' height='12' rx='1'/%3E%3C/svg%3E");
+    }
+
+    .video-time {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+      color: #60a5fa;
+      font-size: 11px;
+      line-height: 16px;
+      white-space: nowrap;
+    }
+
+    .video-time .divider {
+      width: 1px;
+      height: 12px;
+      background: rgba(255, 255, 255, .18);
+      margin: 0;
+    }
+
+    .timeline-stack {
+      background: var(--panel-2);
+      backdrop-filter: blur(40px) saturate(180%);
+      -webkit-backdrop-filter: blur(40px) saturate(180%);
+      border-top: 0.5px solid var(--line);
+      display: grid;
+      grid-template-rows: auto auto;
+      min-height: 0;
+      min-width: 0;
+    }
+
+    #timeline-panel {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      border-radius: 0;
+      box-shadow: none;
+      font-size: 13px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    #timeline-header {
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 0 16px;
+      position: relative;
+      color: var(--text-4);
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .timeline-header-title {
+      flex: 0 0 auto;
+    }
+
+    .timeline-header-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .timeline-header-time {
+      color: var(--accent);
+      font-size: 11px;
+      line-height: 16px;
+      letter-spacing: .04em;
+      text-transform: none;
+      white-space: nowrap;
+    }
+
+    .timeline-header-center {
+      display: none;
+    }
+
+    .timeline-header-actions {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .timeline-transport {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-width: 0;
+      max-width: min(100%, 520px);
+      width: 100%;
+    }
+
+    .timeline-play-btn {
+      width: 34px;
+      height: 34px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+    }
+
+    .timeline-play-btn:active {
+      transform: translate(-50%, -50%) scale(0.92);
+    }
+
+    .timeline-speed-control {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      width: clamp(192px, 21vw, 280px);
+      letter-spacing: normal;
+      text-transform: none;
+    }
+
+    .timeline-speed-label,
+    .timeline-speed-readout {
+      font-size: 10px;
+      line-height: 14px;
+      color: var(--text-3);
+      white-space: nowrap;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      flex: 0 0 auto;
+    }
+
+    .timeline-speed-readout {
+      min-width: 36px;
+      text-align: right;
+      color: var(--text-1);
+    }
+
+    #playback-speed-input {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      min-width: 0;
+      height: 20px;
+      background: transparent;
+      cursor: pointer;
+      flex: 1 1 auto;
+    }
+
+    #playback-speed-input::-webkit-slider-runnable-track {
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--line);
+    }
+
+    #playback-speed-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      margin-top: -5px;
+      border-radius: 999px;
+      border: 0;
+      background: #ffffff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.2);
+    }
+
+    #playback-speed-input::-moz-range-track {
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--line);
+    }
+
+    #playback-speed-input::-moz-range-thumb {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      border: 0;
+      background: #ffffff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.2);
+    }
+
+    .timeline-export-btn {
+      height: 24px;
+      padding: 0 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      line-height: 14px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-2);
+    }
+
+    .timeline-export-btn.is-busy {
+      cursor: default;
+      opacity: .85;
+      border-color: var(--line);
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    .timeline-export-btn .spinner-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      border: 2px solid rgba(0, 0, 0, 0.12);
+      border-top-color: var(--accent);
+      display: none;
+      animation: export-spin .8s linear infinite;
+    }
+
+    .timeline-export-btn.is-busy .spinner-dot {
+      display: inline-block;
+    }
+
+    .export-control {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .timeline-export-settings-toggle {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(0, 0, 0, 0.03);
+      color: var(--text-3);
+      font-size: 11px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background .15s ease, border-color .15s ease, color .15s ease;
+    }
+
+    .timeline-export-settings-toggle:hover {
+      background: rgba(0, 0, 0, 0.06);
+      border-color: var(--line-strong);
+      color: var(--text-1);
+    }
+
+    .timeline-export-settings-toggle:disabled {
+      cursor: default;
+      opacity: 0.55;
+    }
+
+    .timeline-export-settings-popover {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: min(420px, 86vw);
+      max-height: min(72vh, 560px);
+      overflow: auto;
+      border-radius: var(--r-md);
+      border: 0.5px solid var(--line);
+      background: var(--panel-3);
+      backdrop-filter: blur(40px) saturate(180%);
+      -webkit-backdrop-filter: blur(40px) saturate(180%);
+      box-shadow: var(--shadow);
+      padding: 10px;
+      z-index: 35;
+      display: none;
+      letter-spacing: normal;
+      text-transform: none;
+    }
+
+    .timeline-export-settings-popover.is-open {
+      display: block;
+    }
+
+    .export-settings-section {
+      border: 1px solid var(--line);
+      border-radius: var(--r-sm);
+      background: rgba(0, 0, 0, 0.02);
+      padding: 8px;
+      margin-bottom: 8px;
+    }
+
+    .export-settings-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .export-settings-title {
+      color: var(--text-3);
+      font-size: 10px;
+      line-height: 14px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .export-mode-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+
+    .export-mode-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 7px;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--line);
+      color: var(--text-2);
+      font-size: 11px;
+      line-height: 14px;
+      cursor: pointer;
+      user-select: none;
+      background: rgba(0, 0, 0, 0.01);
+    }
+
+    .export-mode-item input {
+      accent-color: var(--accent);
+      margin: 0;
+    }
+
+    .export-check-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .export-check-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      padding: 5px 6px;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--line);
+      color: var(--text-2);
+      font-size: 11px;
+      line-height: 14px;
+      cursor: pointer;
+      user-select: none;
+      background: rgba(0, 0, 0, 0.01);
+    }
+
+    .export-check-item input {
+      accent-color: var(--accent);
+      margin: 0;
+      flex: 0 0 auto;
+    }
+
+    .export-check-item span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    @keyframes export-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .timeline-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      align-items: center;
+      gap: 0;
+      padding: 0 16px 10px;
+    }
+
+    .timeline-row .is-hidden {
+      display: none !important;
+    }
+
+    #timeline-bar {
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      min-height: 22px;
+    }
+
+    #timeline-scrubber {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      margin: 0;
+      height: 22px;
+      background: transparent;
+      position: relative;
+      z-index: 2;
+      cursor: pointer;
+    }
+
+    #timeline-scrubber::-webkit-slider-runnable-track {
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--line);
+    }
+
+    #timeline-scrubber::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      margin-top: -6px;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      opacity: 0;
+    }
+
+    #timeline-scrubber::-moz-range-track {
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--line);
+    }
+
+    #timeline-scrubber::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      opacity: 0;
+      box-shadow: none;
+    }
+
+    #timeline-scrubber::-moz-range-progress {
+      height: 4px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+    }
+
+    #timeline-pointer {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 2px solid var(--accent);
+      box-sizing: border-box;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 4;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    }
+
+    #timeline-markers {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 12px;
+      transform: translateY(-50%);
+      pointer-events: none;
+      z-index: 3;
+      display: none;
+    }
+
+    .highlight-marker {
+      position: absolute;
+      width: 4px;
+      height: 12px;
+      border-radius: 2px;
+      transform: translateX(-50%);
+      cursor: pointer;
+      pointer-events: auto;
+    }
+
+    .highlight-marker.leader {
+      background: #fcd34d;
+    }
+
+    .highlight-marker.chase {
+      background: #9ca3af;
+    }
+
+    .highlight-marker.results {
+      background: #34d399;
+    }
+
+    .highlight-marker.insight {
+      background: #a78bfa;
+    }
+
+    .highlight-marker.lead-change {
+      background: #fb923c;
+    }
+
+    .highlight-marker.record-watch {
+      background: #c084fc;
+    }
+
+    .highlight-marker.tech-review {
+      background: #67e8f9;
+    }
+
+    #elements-timeline {
+      margin: 0;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      padding: 8px 16px 12px;
+      min-height: 0;
+      overflow-x: visible;
+      overflow-y: visible;
+      position: relative;
+    }
+
+    .et-playhead {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--accent);
+      transform: translateX(-1px);
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .et-row {
+      position: relative;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .et-row:last-child {
+      border-bottom: none;
+    }
+
+    .et-row-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .et-label {
+      font-size: 12px;
+      color: var(--text-2);
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .et-actions {
+      display: flex;
+      gap: 4px;
+    }
+
+    .et-bar {
+      position: relative;
+      height: 12px;
+      background: rgba(0, 0, 0, 0.04);
+      border-radius: 999px;
+      overflow: visible;
+      isolation: isolate;
+      transition: background .14s ease, box-shadow .14s ease;
+    }
+
+    .et-bar.et-bar--insertable {
+      cursor: pointer;
+      background: rgba(52, 120, 246, 0.10);
+      box-shadow: inset 0 0 0 1px rgba(52, 120, 246, 0.16);
+    }
+
+    .et-bar.et-bar--insert-pending {
+      background: rgba(52, 120, 246, 0.14);
+      box-shadow: inset 0 0 0 1px rgba(52, 120, 246, 0.22), 0 0 0 3px rgba(52, 120, 246, 0.10);
+    }
+
+    .et-insert-popover {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(52, 120, 246, 0.18);
+      box-shadow: 0 14px 32px rgba(15, 23, 42, 0.18);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 5;
+    }
+
+    .et-insert-popover::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      width: 12px;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.96);
+      border-right: 1px solid rgba(52, 120, 246, 0.18);
+      border-bottom: 1px solid rgba(52, 120, 246, 0.18);
+      transform: translate(-50%, -6px) rotate(45deg);
+    }
+
+    .et-insert-popover-label {
+      color: var(--text-2);
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .et-insert-popover-btn {
+      height: 26px;
+      padding: 0 10px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(52, 120, 246, 0.22);
+    }
+
+    .et-insert-popover-btn:hover {
+      filter: brightness(1.04);
+    }
+
+    .et-insert-popover-btn:active {
+      transform: scale(0.97);
+    }
+
+    .et-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+      cursor: pointer;
+      z-index: 1;
+      transition: filter .14s ease, box-shadow .14s ease, transform .14s ease;
+    }
+
+    .et-fill.active {
+      z-index: 3;
+      filter: brightness(1.05);
+      box-shadow: 0 0 0 1px var(--accent), 0 0 0 3px var(--accent-soft), 0 2px 8px rgba(0, 122, 255, 0.2);
+    }
+
+    .et-fill.active::after {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      border: 1px solid rgba(0, 122, 255, 0.3);
+      pointer-events: none;
+    }
+
+    .et-handle {
+      position: absolute;
+      top: -2px;
+      width: 10px;
+      height: 16px;
+      background: var(--text-5);
+      border-radius: 999px;
+      cursor: ew-resize;
+      pointer-events: all;
+    }
+
+    .et-handle.left {
+      left: -5px;
+    }
+
+    .et-handle.right {
+      right: -5px;
+    }
+
+    .active-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .active-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .active-card-selected {
+      border-color: rgba(41, 121, 255, .5);
+      box-shadow: inset 0 0 0 1px rgba(41, 121, 255, .3);
+    }
+
+    .active-card .meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .active-card .title {
+      color: var(--text-1);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .active-card .subtitle {
+      color: var(--text-4);
+      font-size: 11px;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    #log {
+      position: fixed;
+      left: 12px;
+      bottom: 12px;
+      z-index: 5;
+      max-width: 420px;
+      display: none !important;
+      font-size: 11px;
+      line-height: 1.4;
+      color: var(--text-4);
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 6px;
+      padding: 6px 8px;
+      white-space: pre-wrap;
+      backdrop-filter: blur(3px);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, .75);
+      z-index: 2000;
+    }
+
+    .modal-content {
+      position: relative;
+      max-width: min(92vw, 1200px);
+      max-height: 90vh;
+      background: #0f0f0f;
+      border: 1px solid var(--line-strong);
+      border-radius: 10px;
+      padding: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .modal-content img {
+      display: block;
+      max-width: 100%;
+      max-height: calc(90vh - 24px);
+      border-radius: 8px;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-2);
+      cursor: pointer;
+    }
+
+    .modal-close:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, .1);
+    }
+
+    .help-modal-content {
+      width: min(900px, 92vw);
+      max-height: min(88vh, 920px);
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
+      color: var(--text-2);
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .help-modal-close {
+      top: 16px;
+      right: 16px;
+      background: rgba(0, 0, 0, 0.06);
+      border-color: rgba(0, 0, 0, 0.08);
+      color: var(--text-2);
+      z-index: 2;
+    }
+
+    .help-modal-close:hover {
+      background: rgba(0, 0, 0, 0.1);
+      color: var(--text-1);
+    }
+
+    .help-doc {
+      max-height: min(88vh, 920px);
+      overflow: auto;
+      padding: 28px 32px 30px;
+      background:
+        radial-gradient(circle at top right, rgba(52, 120, 246, 0.08), transparent 32%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 249, 251, 0.98));
+    }
+
+    .help-doc h1,
+    .help-doc h2,
+    .help-doc h3 {
+      margin: 0;
+      color: var(--text-1);
+      letter-spacing: -0.02em;
+    }
+
+    .help-doc h1 {
+      font-size: 28px;
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+
+    .help-doc h2 {
+      font-size: 16px;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+
+    .help-doc h3 {
+      font-size: 14px;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+
+    .help-doc p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-2);
+    }
+
+    .help-doc ul {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 6px;
+      color: var(--text-2);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .help-doc li strong {
+      color: var(--text-1);
+    }
+
+    .help-doc-intro {
+      display: grid;
+      gap: 10px;
+      padding-right: 44px;
+      margin-bottom: 22px;
+    }
+
+    .help-doc-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .help-doc-card {
+      display: grid;
+      gap: 8px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.04);
+    }
+
+    .help-doc-note {
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(52, 120, 246, 0.08);
+      border: 1px solid rgba(52, 120, 246, 0.14);
+      color: var(--text-2);
+    }
+
+    .awards-overlay-surface {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 30;
+      font-size: 9px;
+      color: var(--text-1);
+    }
+
+    .awards-overlay-surface .award-card {
+      position: absolute;
+      left: 12px;
+      transform: translateY(-50%);
+      max-width: 220px;
+      background: rgba(0, 0, 0, 0.58);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 8px;
+      padding: 6px 7px;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, .4);
+      backdrop-filter: blur(2px);
+    }
+
+    .awards-overlay-surface .award-name {
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .awards-overlay-surface .award-line {
+      color: #cbd5f5;
+      margin-top: 2px;
+    }
+
+    .awards-overlay-surface .award-awards {
+      color: #9ae6b4;
+      margin-top: 2px;
+    }
+
+    #overlay-awards-wide {
+      display: none;
+    }
+
+    #overlay-awards-track {
+      display: none;
+      inset: auto auto 16px 12px;
+      width: 270px;
+    }
+
+    #overlay-awards-track .award-card {
+      position: relative;
+      left: 0;
+      transform: none;
+    }
+
+    #btn-exit-track {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(0, 0, 0, 0.55);
+      color: #fff;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    #btn-exit-track:hover {
+      background: rgba(239, 68, 68, 0.75);
+      border-color: rgba(248, 113, 113, .75);
+    }
+
+    .hidden-dev {
+      display: none !important;
+    }
+
+    @media (max-width: 1400px) {
+      .app-main {
+        min-width: max-content;
+      }
+    }
+
+    @media (max-width: 980px) {
+      body {
+        overflow: auto;
+      }
+
+      #app {
+        height: auto;
+        min-height: 100vh;
+        grid-template-rows: 48px auto;
+      }
+
+      .app-header {
+        grid-template-columns: 1fr;
+      }
+
+      .brand-block {
+        display: none;
+      }
+
+      .app-main {
+        min-width: max-content;
+      }
+
+      .center-column {
+        grid-template-rows: 50px auto minmax(220px, auto);
+        align-self: start;
+      }
+
+      .header-main {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .competition-picker {
+        min-width: 0;
+        max-width: none;
+        flex: 1;
+      }
+
+      .header-actions {
+        gap: 6px;
+      }
+
+      #log {
+        position: static;
+        margin: 8px 12px 12px;
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app" class="view-mode-overview right-panel-surface--mode">
+    <header class="app-header">
+      <div class="brand-block">
+        <img class="brand-icon" src="assets/logos/icon.png" alt="SwimComposer icon">
+        <div class="brand-name">SwimComposer</div>
+      </div>
+      <div class="header-main">
+        <div class="competition-picker">
+          <div class="picker-copy">
+            <label for="competition-select">Competition</label>
+            <select id="competition-select" class="competition-select"></select>
+          </div>
+          <div class="picker-chevron">▾</div>
+        </div>
+        <div class="header-actions">
+          <button id="btn-projection-help" class="ghost-button help-btn" title="Open help guide">Help</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="app-main">
+      <aside class="left-panel">
+        <div class="left-heading">Data Layers</div>
+        <div class="panel-scroller">
+          <div class="sidebar">
+            <div class="sidebar-section camera-section">
+              <h3>Camera</h3>
+            </div>
+
+            <div class="sidebar-section">
+              <div class="data-groups">
+                <div class="data-group">
+                  <button class="dg-title" type="button" data-group-toggle aria-expanded="true">Live Data</button>
+                  <div id="live-data-chips" class="chip-grid"></div>
+                </div>
+                <div class="data-group">
+                  <button class="dg-title" type="button" data-group-toggle aria-expanded="true">Insights</button>
+                  <div id="insight-options" class="chip-grid"></div>
+                </div>
+                <div class="data-group">
+                  <button class="dg-title" type="button" data-group-toggle aria-expanded="true">Athletes Info</button>
+                  <div id="athlete-info-chips" class="chip-grid"></div>
+                </div>
+                <div class="data-group">
+                  <button class="dg-title" type="button" data-group-toggle aria-expanded="true">Records</button>
+                  <div id="records-chips" class="chip-grid"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </aside>
+
+      <main class="center-column">
+        <div class="mode-bar">
+          <div class="mode-left">
+            <div class="mode-label">View Mode</div>
+            <div class="mode-tabs">
+              <button class="view-tab is-active" id="btn-view-overview" type="button">Overview</button>
+              <button class="view-tab" id="btn-view-tracking" type="button">Tracking</button>
+              <button class="view-tab" id="btn-view-comparison" type="button">Comparison</button>
+            </div>
+          </div>
+          <div class="mode-bar-right">
+            <button class="icon-btn" id="btn-illustration" type="button" title="Show illustration">i</button>
+          </div>
+        </div>
+
+        <div class="workspace">
+          <div class="canvas-stage">
+            <div class="canvas-row">
+              <div id="canvas-container">
+                <button id="btn-exit-track" title="Exit track mode">✕</button>
+                <div id="comparison-selection-frame" aria-hidden="true"></div>
+                <button id="btn-comparison-confirm" type="button" title="Compare selected lanes">Compare</button>
+                <div id="export-render-overlay" aria-hidden="true">
+                  <div class="export-render-card">
+                    <div class="export-render-head">
+                      <span class="export-render-spinner" aria-hidden="true"></span>
+                      <span>Rendering Export</span>
+                    </div>
+                    <div class="export-render-copy">Rendering the current playback view to a downloadable video. Please
+                      wait.</div>
+                    <div class="export-render-progress-wrap" aria-hidden="true">
+                      <div id="export-render-progress-fill" class="export-render-progress-fill"></div>
+                    </div>
+                    <div class="export-render-status">
+                      <span id="export-render-status-text">Preparing…</span>
+                      <span id="export-render-status-time">00:00 / 00:00</span>
+                    </div>
+                    <div class="export-render-actions">
+                      <button id="btn-export-render-cancel" class="export-render-cancel" type="button">Cancel</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-stack">
+          <div id="timeline-panel">
+            <div id="timeline-header">
+              <div class="timeline-header-meta">
+                <span class="timeline-header-title">Timeline</span>
+                <span id="video-time-label" class="timeline-header-time">00:00 / 00:00</span>
+              </div>
+              <button id="btn-play" class="play-btn timeline-play-btn" title="Play/Pause">Play</button>
+              <div class="timeline-header-actions">
+                <div class="timeline-speed-control">
+                  <span class="timeline-speed-label">Speed</span>
+                  <input id="playback-speed-input" type="range" min="0.25" max="2" step="0.05" value="1" />
+                  <span id="playback-speed-readout" class="timeline-speed-readout">1.0x</span>
+                </div>
+                <div id="export-control" class="export-control">
+                  <button id="btn-export-render" class="ghost-button timeline-export-btn" type="button"
+                    title="Export current playback view as video">
+                    <span class="spinner-dot" aria-hidden="true"></span>
+                    <span id="btn-export-render-label">Export</span>
+                  </button>
+                  <button id="btn-export-settings-toggle" class="timeline-export-settings-toggle" type="button"
+                    title="Export settings" aria-expanded="false">⚙</button>
+                  <div id="export-settings-popover" class="timeline-export-settings-popover" aria-hidden="true">
+                    <div class="export-settings-section">
+                      <div class="export-settings-title">Export Type</div>
+                      <div class="export-mode-grid">
+                        <label class="export-mode-item">
+                          <input type="radio" name="export-output-mode" value="video" checked />
+                          <span>Video Only</span>
+                        </label>
+                        <label class="export-mode-item">
+                          <input type="radio" name="export-output-mode" value="metrics" />
+                          <span>Metrics Panels Only</span>
+                        </label>
+                        <label class="export-mode-item">
+                          <input type="radio" name="export-output-mode" value="composite" />
+                          <span>Video + Metrics (Right Side)</span>
+                        </label>
+                        <label class="export-mode-item">
+                          <input type="radio" name="export-output-mode" value="preset" />
+                          <span>Current State JSON</span>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="export-settings-section">
+                      <div class="export-settings-title">Metrics</div>
+                      <div id="export-metrics-options" class="export-check-grid"></div>
+                    </div>
+                    <div class="export-settings-section">
+                      <div class="export-settings-title">Lane IDs</div>
+                      <div id="export-lanes-options" class="export-check-grid"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="timeline-row">
+              <div id="timeline-bar">
+                <div id="timeline-markers"></div>
+                <input type="range" id="timeline-scrubber" min="0" max="20" step="0.01" value="0" />
+                <div id="timeline-pointer" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+          <div id="elements-timeline" class="elements-timeline"></div>
+        </div>
+      </main>
+
+      <aside class="right-panel">
+        <div class="panel-title-static-wrap panel-header-top">
+          <div class="panel-header-text">
+            <div id="right-panel-heading" class="panel-title-static">Overview Settings</div>
+            <div id="panel-title" class="panel-title-live">Select a layer to edit settings</div>
+          </div>
+          <button id="btn-comparison-panel-toggle" class="ghost-button panel-mode-toggle" type="button"
+            aria-label="Collapse comparison settings" aria-expanded="true" title="Collapse comparison settings">Hide Settings</button>
+          <button class="btn-close-settings" id="btn-close-settings" type="button">Back</button>
+        </div>
+
+        <div id="right-panel-mode-content" class="right-panel-mode-content">
+          <div id="panel-overview-settings" class="mode-panel mode-panel--active">
+            <div class="mode-section">
+              <div class="mode-section-title">Overview</div>
+              <div class="mode-section-copy">
+                Select a data layer from the left panel to open Layer Settings.
+              </div>
+            </div>
+            <div class="mode-section">
+              <div class="mode-section-title">Highlight Style</div>
+              <div class="mode-choice-grid cols-2">
+                <button class="mode-choice active" data-track-highlight-style="standard" type="button">
+                  <span class="mode-choice-icon" aria-hidden="true"><img src="assets/figma-icons/highlight-standard.svg"
+                      alt="" /></span>
+                  <span class="mode-choice-label">Standard</span>
+                </button>
+                <button class="mode-choice" data-track-highlight-style="spotlight" type="button">
+                  <span class="mode-choice-icon" aria-hidden="true"><img
+                      src="assets/figma-icons/highlight-spotlight.svg" alt="" /></span>
+                  <span class="mode-choice-label">Spotlight</span>
+                </button>
+                <button class="mode-choice" data-track-highlight-style="edgebracket" type="button">
+                  <span class="mode-choice-icon" aria-hidden="true"><img
+                      src="assets/figma-icons/highlight-edge-bracket.svg" alt="" /></span>
+                  <span class="mode-choice-label">Edge Bracket</span>
+                </button>
+                <button class="mode-choice" data-track-highlight-style="blur" type="button">
+                  <span class="mode-choice-icon" aria-hidden="true"><img src="assets/figma-icons/highlight-blur.svg"
+                      alt="" /></span>
+                  <span class="mode-choice-label">Blur Context</span>
+                </button>
+              </div>
+            </div>
+            <div class="mode-section">
+              <div class="mode-section-title">Highlight Transition</div>
+              <div class="mode-choice-grid cols-2">
+                <button class="mode-choice" data-overview-highlight-transition="hardcut" type="button">
+                  <span class="mode-choice-icon" aria-hidden="true"><img
+                      src="assets/figma-icons/track-transition-hardcut.svg" alt="" /></span>
+                  <span class="mode-choice-label">Hardcut</span>
+                </button>
+                <button class="mode-choice active" data-overview-highlight-transition="smooth" type="button">
+                  <span class="mode-choice-icon" aria-hidden="true"><img
+                      src="assets/figma-icons/track-transition-dissolve.svg" alt="" /></span>
+                  <span class="mode-choice-label">Smooth</span>
+                </button>
+              </div>
+            </div>
+            <div class="mode-section">
+              <div class="mode-section-title">Animation Duration</div>
+              <div class="mode-range-row">
+                <input id="overview-highlight-transition-duration" type="range" min="0.25" max="1.5" step="0.05"
+                  value="0.30" />
+                <div id="overview-highlight-transition-duration-readout" class="mode-range-value">0.3s</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="panel-tracking-settings" class="mode-panel">
+            <div class="mode-section">
+              <div class="mode-section-title">Transition Type</div>
+              <div class="mode-choice-grid cols-2">
+                <button class="mode-choice active" data-track-transition="hardcut" type="button">
+                  <span class="mode-choice-icon" aria-hidden="true"><img
+                      src="assets/figma-icons/track-transition-hardcut.svg" alt="" /></span>
+                  <span class="mode-choice-label">Hardcut</span>
+                </button>
+                <button class="mode-choice" data-track-transition="zoomlens" type="button">
+                  <span class="mode-choice-icon" aria-hidden="true"><img
+                      src="assets/figma-icons/track-transition-zoomlens.svg" alt="" /></span>
+                  <span class="mode-choice-label">Zoom Lens</span>
+                </button>
+                <button class="mode-choice" data-track-transition="dissolve" type="button">
+                  <span class="mode-choice-icon" aria-hidden="true"><img
+                      src="assets/figma-icons/track-transition-dissolve.svg" alt="" /></span>
+                  <span class="mode-choice-label">Dissolve</span>
+                </button>
+                <button class="mode-choice" data-track-transition="wipe" type="button">
+                  <span class="mode-choice-icon" aria-hidden="true"><img
+                      src="assets/figma-icons/track-transition-wipe.svg" alt="" /></span>
+                  <span class="mode-choice-label">Wipe</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="mode-section">
+              <div class="mode-section-title">Animation Duration</div>
+              <div class="mode-range-row">
+                <input id="track-transition-duration" type="range" min="0.25" max="1.5" step="0.05" value="0.75" />
+                <div id="track-transition-duration-readout" class="mode-range-value">0.75s</div>
+              </div>
+            </div>
+
+            <div class="mode-section">
+              <div class="mode-section-title">Zoom Level</div>
+              <div class="mode-range-row">
+                <input id="track-zoom-level" type="range" min="1" max="3" step="0.05" value="1.85" />
+                <div id="track-zoom-level-readout" class="mode-range-value">1.9x</div>
+              </div>
+            </div>
+
+            <div class="mode-section">
+              <div class="mode-section-title">Tracking Type</div>
+              <div class="mode-choice-grid cols-2">
+                <button class="mode-choice active" data-track-behavior="follow" type="button">
+                  <span class="mode-choice-icon" aria-hidden="true"><img
+                      src="assets/figma-icons/track-behavior-follow.svg" alt="" /></span>
+                  <span class="mode-choice-label">Follow</span>
+                </button>
+                <button class="mode-choice" data-track-behavior="pan" type="button">
+                  <span class="mode-choice-icon" aria-hidden="true"><img src="assets/figma-icons/track-behavior-pan.svg"
+                      alt="" /></span>
+                  <span class="mode-choice-label">Pan</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <div id="panel-comparison-settings" class="mode-panel">
+            <div id="comparison-settings-collapsible" class="mode-collapsible comparison-settings-collapsible expanded">
+              <div class="mode-collapsible-body comparison-settings-body">
+                <div class="mode-section">
+                  <div class="mode-section-title">Transition Type</div>
+                  <div class="mode-choice-grid cols-2">
+                    <button class="mode-choice" data-comparison-transition="hardcut" type="button">
+                      <span class="mode-choice-icon" aria-hidden="true"><img
+                          src="assets/figma-icons/track-transition-hardcut.svg" alt="" /></span>
+                      <span class="mode-choice-label">Hardcut</span>
+                    </button>
+                    <button class="mode-choice active" data-comparison-transition="smooth" type="button">
+                      <span class="mode-choice-icon" aria-hidden="true"><img
+                          src="assets/figma-icons/track-transition-dissolve.svg" alt="" /></span>
+                      <span class="mode-choice-label">Smooth</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="mode-section">
+                  <div class="mode-section-title">Animation Duration</div>
+                  <div class="mode-range-row">
+                    <input id="comparison-transition-duration" type="range" min="0.25" max="1.5" step="0.05"
+                      value="0.75" />
+                    <div id="comparison-transition-duration-readout" class="mode-range-value">0.75s</div>
+                  </div>
+                </div>
+                <div class="mode-section">
+                  <div class="mode-section-title">Layout Mode</div>
+                  <div class="mode-choice-grid cols-2">
+                    <button class="mode-choice active" data-comparison-layout="sideBySide" type="button">
+                      <span class="mode-choice-icon" aria-hidden="true"><img
+                          src="assets/figma-icons/comparison-layout-side-by-side.svg" alt="" /></span>
+                      <span class="mode-choice-label">Side-by-Side</span>
+                    </button>
+                    <button class="mode-choice" data-comparison-layout="overlay" type="button">
+                      <span class="mode-choice-icon" aria-hidden="true"><img
+                          src="assets/figma-icons/comparison-layout-overlay.svg" alt="" /></span>
+                      <span class="mode-choice-label">Overlay</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="mode-section">
+                  <div class="mode-section-title">Selection Behavior</div>
+                  <label class="mode-inline-toggle" for="comparison-preserve-selection">
+                    <span>Preserve previous selection on re-enter</span>
+                    <input id="comparison-preserve-selection" type="checkbox" />
+                  </label>
+                </div>
+                <div class="mode-section">
+                  <div class="mode-section-title">Athlete Selection</div>
+                  <label class="field">
+                    <span>Bind By</span>
+                    <select id="comparison-selection-mode">
+                      <option value="lane">Lane</option>
+                      <option value="rank">Rank</option>
+                    </select>
+                    <em></em>
+                  </label>
+                  <div id="comparison-lane-selector" class="lanes"></div>
+                </div>
+              </div>
+            </div>
+            <div class="mode-section">
+              <div class="mode-section-title">History Data</div>
+              <div class="comparison-live-data-panel">
+                <div class="comparison-live-data-head">
+                  <div id="comparison-live-data-metric" class="comparison-live-data-metric">Selected Metrics Data</div>
+                  <div id="comparison-live-data-status" class="comparison-live-data-status">--:-- / --:--</div>
+                </div>
+                <div class="comparison-live-data-canvas-wrap">
+                  <canvas id="comparison-live-data-canvas" class="comparison-live-data-canvas" width="320"
+                    height="144"></canvas>
+                  <div id="comparison-live-data-empty" class="comparison-live-data-empty">Select lanes in Comparison and
+                    enable metrics in the left Live Data panel.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="layer-settings-wrapper" id="layer-settings-flyout">
+          <div class="sidebar-section">
+            <div id="control-panel" class="control-panel">
+              <div class="section">
+                <h5>Representation</h5>
+                <div id="panel-reps" class="rep-pills"></div>
+              </div>
+
+              <div class="section">
+                <h5>Placement</h5>
+                <label class="field">
+                  <span id="panel-follow-label">Moving With Swimmer</span>
+                  <input type="checkbox" id="panel-follow" checked />
+                  <em></em>
+                </label>
+                <label class="field is-hidden" id="panel-static-slot-row">
+                  <span>Static Position</span>
+                  <select id="panel-static-slot">
+                    <option value="laneLeft">Left</option>
+                    <option value="laneCenter">Center</option>
+                    <option value="laneRight">Right</option>
+                  </select>
+                  <em></em>
+                </label>
+                <label class="field is-hidden" id="panel-static-align-row">
+                  <span>Text Align</span>
+                  <select id="panel-static-align">
+                    <option value="left">Left</option>
+                    <option value="center">Center</option>
+                    <option value="right">Right</option>
+                  </select>
+                  <em></em>
+                </label>
+                <label class="field is-hidden" id="panel-screen-anchor-row">
+                  <span>Screen Anchor</span>
+                  <select id="panel-screen-anchor">
+                    <option value="screenTopLeft">Top Left</option>
+                    <option value="screenTopRight">Top Right</option>
+                    <option value="screenBottomLeft">Bottom Left</option>
+                    <option value="screenBottomRight">Bottom Right</option>
+                  </select>
+                  <em>top layer</em>
+                </label>
+                <label class="field">
+                  <span>Projection</span>
+                  <input type="checkbox" id="panel-projection" checked />
+                  <em></em>
+                </label>
+                <label class="field">
+                  <span>Entrance / Exit Animation</span>
+                  <input type="checkbox" id="panel-segment-motion" checked />
+                  <em></em>
+                </label>
+                <label class="field">
+                  <span id="panel-offset-x-label">Behind Swimmer</span>
+                  <input type="range" id="panel-offset-x" min="-400" max="400" step="5" value="0" />
+                  <output id="panel-offset-x-readout">0</output>
+                </label>
+                <label class="field">
+                  <span>Offset Y</span>
+                  <input type="range" id="panel-offset-y" min="-200" max="200" step="5" value="0" />
+                  <output id="panel-offset-y-readout">0</output>
+                </label>
+              </div>
+
+              <div class="section">
+                <h5>Appearance</h5>
+                <label class="field">
+                  <span>Scale</span>
+                  <input type="range" id="panel-scale" min="0.3" max="2" step="0.05" value="0.5" />
+                  <output id="panel-scale-readout">0.5</output>
+                </label>
+                <label class="field">
+                  <span>Rotation</span>
+                  <input type="range" id="panel-rotation" min="0" max="360" step="1" value="0" />
+                  <output id="panel-rotation-readout">0</output>
+                </label>
+                <label class="field">
+                  <span>Opacity</span>
+                  <input type="range" id="panel-alpha" min="0.2" max="1" step="0.05" value="0.9" />
+                  <output id="panel-alpha-readout">0.9</output>
+                </label>
+                <label class="field">
+                  <span>Color</span>
+                  <div></div>
+                  <input type="color" id="panel-color" value="#d3d3d3" />
+                </label>
+              </div>
+
+              <div class="section is-hidden" id="panel-live-data-section">
+                <h5>Live Data</h5>
+                <div id="panel-live-data-controls" class="rep-props"></div>
+              </div>
+
+              <div class="section" id="panel-rep-props-section">
+                <h5>Representation Style</h5>
+                <div id="panel-rep-props" class="rep-props"></div>
+                <div id="panel-rep-props-note" class="rep-style-note"></div>
+              </div>
+
+              <div class="section">
+                <h5>Advanced Style (CSS-like)</h5>
+                <textarea id="panel-style-css" class="style-editor"
+                  placeholder="width: 220; height: 12; fill-color: #d3d3d3;"></textarea>
+                <div class="style-editor-help">Shows the current editable parameters as `key: value;`. Edit the draft, then click `Apply`.</div>
+                <div class="style-editor-actions">
+                  <button id="panel-style-apply" class="ghost-button full" type="button">Apply Advanced Style</button>
+                  <button id="panel-style-reset" class="ghost-button full" type="button">Reload Current Values</button>
+                </div>
+              </div>
+
+              <div class="section" id="panel-lanes-section">
+                <div class="section-heading">
+                  <h5>Active Lanes</h5>
+                  <label class="section-heading-control">
+                    <span>Select By</span>
+                    <select id="panel-lane-selection-mode">
+                      <option value="lane">Lane</option>
+                      <option value="rank">Top 1-8</option>
+                    </select>
+                  </label>
+                </div>
+                <div id="panel-lanes" class="lanes"></div>
+              </div>
+
+              <div class="section is-hidden" id="panel-compare-target-section">
+                <h5>Compare Target</h5>
+                <label class="field is-hidden" id="panel-target-lane-row">
+                  <span>Swimmer Lane</span>
+                  <select id="panel-target-lane"></select>
+                  <em>reference lane</em>
+                </label>
+                <label class="field is-hidden" id="panel-target-record-row">
+                  <span>Record Type</span>
+                  <select id="panel-target-record">
+                    <option value="world">World Record</option>
+                    <option value="olympic">Olympic Record</option>
+                  </select>
+                  <em>WR / OR</em>
+                </label>
+              </div>
+
+              <div class="section">
+                <h5>Layer</h5>
+                <label class="field">
+                  <span>Visible</span>
+                  <input type="checkbox" id="panel-visible" checked />
+                  <em>shown</em>
+                </label>
+              </div>
+
+              <button id="btn-save-default" class="ghost-button full">Save Layer Settings</button>
+              <button id="btn-import-settings" class="ghost-button full">Import JSON Settings</button>
+              <button id="btn-clear-default" class="ghost-button full">Reset Local Settings</button>
+              <input id="import-settings-input" type="file" accept=".json,application/json" hidden />
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div id="log">Loading competitions ...</div>
+
+    <div id="modal-illustration" class="modal-backdrop">
+      <div class="modal-content">
+        <button class="modal-close" id="modal-close">×</button>
+        <img src="./assets/illustration.png" alt="Illustration" />
+      </div>
+    </div>
+
+    <div id="modal-help" class="modal-backdrop" aria-hidden="true">
+      <div class="modal-content help-modal-content" role="dialog" aria-modal="true" aria-labelledby="help-doc-title">
+        <button class="modal-close help-modal-close" id="modal-help-close" aria-label="Close help">×</button>
+        <article class="help-doc">
+          <div class="help-doc-intro">
+            <h1 id="help-doc-title">SwimComposer Guide</h1>
+            <p>SwimComposer is a technology probe for authoring narrative visualizations in motion in swimming videos.</p>
+          </div>
+
+          <div class="help-doc-grid">
+            <section class="help-doc-card">
+              <h2>1. Quick Start</h2>
+              <ul>
+                <li><strong>Select a competition:</strong> choose the race dataset from the header picker.</li>
+                <li><strong>Add a layer:</strong> use the left panel to enable a metric or athlete-info layer.</li>
+                <li><strong>Edit the layer:</strong> the right panel lets you change representation, placement, visibility, styling, lane selection, and live-data behavior.</li>
+                <li><strong>Arrange timing:</strong> use the timeline to move through the race and define when layers or view modes should appear.</li>
+                <li><strong>Export:</strong> use the Export menu to render video output or download the current edited state as JSON.</li>
+              </ul>
+            </section>
+
+            <section class="help-doc-card">
+              <h2>2. Header</h2>
+              <ul>
+                <li><strong>Competition:</strong> switches the race video.</li>
+                <li><strong>Help:</strong> opens this guide.</li>
+              </ul>
+            </section>
+
+            <section class="help-doc-card">
+              <h2>3. Left Panel: Data Layers</h2>
+              <p>The left panel is where you add or remove overlay layers. Clicking a layer opens its settings; the toggle button enables or disables it.</p>
+              <ul>
+                <li><strong>Live Data:</strong> real-time metrics such as speed, distance, rank, or comparison values.</li>
+                <li><strong>Insights:</strong> insight-oriented layers such as leader status, result, and final-time annotations.</li>
+                <li><strong>Athletes Info:</strong> persistent athlete details such as name, country, age, major awards, and Olympic appearances.</li>
+                <li><strong>Records:</strong> record references such as world record, Olympic record, and personal record.</li>
+              </ul>
+            </section>
+
+            <section class="help-doc-card">
+              <h2>4. Center Panel: View Modes and Timeline</h2>
+              <ul>
+                <li><strong>Overview:</strong> shows the full field with optional highlighting.</li>
+                <li><strong>Tracking:</strong> follows a swimmer or camera target with motion settings and zoom.</li>
+                <li><strong>Comparison:</strong> creates focused comparison layouts between selected swimmers.</li>
+                <li><strong>Play / Speed:</strong> preview the sequence at different playback rates.</li>
+                <li><strong>Timeline scrubber:</strong> jump to any time in the race and inspect how layers look at that exact frame.</li>
+                <li><strong>Recorded mode segments:</strong> the timeline rows below the video show saved View Mode, playback-rate, and layer segments over time.</li>
+              </ul>
+            </section>
+
+            <section class="help-doc-card">
+              <h2>5. Right Panel: Layer Settings</h2>
+              <ul>
+                <li><strong>Representation:</strong> switch how a layer is drawn, for example text, bar, line, arrow, medal, or pie.</li>
+                <li><strong>Placement:</strong> control whether the layer follows the swimmer, uses projection, offsets, or segment animation.</li>
+                <li><strong>Appearance:</strong> set scale, rotation, opacity, and color when the layer type supports them.</li>
+                <li><strong>Live Data:</strong> for supported live-data layers, adjust the update interval.</li>
+                <li><strong>Representation Style:</strong> fine-tune visual properties such as sizes, colors, line widths, font family, spacing, or bar scales.</li>
+                <li><strong>Advanced Style:</strong> edit the current layer parameters as a CSS-like text block and apply them directly.</li>
+                <li><strong>Active Lanes:</strong> choose which swimmers a layer applies to, either by lane number or by Top 1-8 rank selection.</li>
+                <li><strong>Compare Target:</strong> for comparison metrics, define the reference swimmer or record.</li>
+                <li><strong>Layer:</strong> control overall layer visibility.</li>
+              </ul>
+            </section>
+
+            <section class="help-doc-card">
+              <h2>6. Saving and Resetting</h2>
+              <ul>
+                <li><strong>Save Layer Settings:</strong> saves the current layer configuration as the local default for this competition.</li>
+                <li><strong>Import JSON Settings:</strong> imports a settings JSON into the current competition and replaces the current authoring state.</li>
+                <li><strong>Reset Local Settings:</strong> removes the saved local settings and reloads the competition preset.</li>
+              </ul>
+            </section>
+
+            <section class="help-doc-card">
+              <h2>7. Export</h2>
+              <ul>
+                <li><strong>Render export:</strong> captures the composed overlay output as media.</li>
+                <li><strong>Current State JSON:</strong> exports the current edited state, including the latest unsaved adjustments visible in the UI.</li>
+              </ul>
+            </section>
+
+            <section class="help-doc-card">
+              <h2>8. Practical Notes</h2>
+              <ul>
+                <li>Use <strong>Lane</strong> selection when you want a layer to stay on a physical lane.</li>
+                <li>Use <strong>Top 1-8</strong> selection when the layer should follow race ranking rather than lane identity.</li>
+                <li>Turn on <strong>Projection</strong> in Layer Settings when you want the layer to stay visually aligned with the camera perspective. This is especially useful in <strong>Tracking</strong> view, where projected layers keep the overlay consistent with the shot geometry instead of behaving like flat screen-space graphics.</li>
+              </ul>
+            </section>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="hidden-dev">
+      <button id="btn-cam-wide" type="button">Wide</button>
+      <button id="btn-cam-track" type="button">Track</button>
+      <select id="select-vis"></select>
+      <div id="select-rep"></div>
+      <button id="btn-add-vis" type="button">Add</button>
+    </div>
+  </div>
+
+  <script src="./libs/pixi.min.js"></script>
+  <script src="./libs/pixi-projection.umd.js"></script>
+  <link rel="icon" type="image/png" href="./assets/logos/icon.png" />
+  <link rel="shortcut icon" type="image/png" href="./assets/logos/icon.png" />
+  <script type="module" src="./src/app/main.js"></script>
+</body>
+
+</html>

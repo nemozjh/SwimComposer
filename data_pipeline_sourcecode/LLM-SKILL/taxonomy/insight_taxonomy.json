@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "categories": [
+    {
+      "id": "lead_change",
+      "description": "A commentary segment indicates that the race leader changed or that a swimmer moved into the lead."
+    },
+    {
+      "id": "lead_status",
+      "description": "A commentary segment describes who is leading or how the lead is being maintained."
+    },
+    {
+      "id": "record_watch",
+      "description": "A commentary segment discusses world, Olympic, competition, or personal-record pace."
+    },
+    {
+      "id": "tech_review",
+      "description": "A commentary segment discusses technique, turn, underwater phase, stroke execution, or finish execution."
+    },
+    {
+      "id": "chase",
+      "description": "A commentary segment describes pursuit, closing gaps, or a swimmer challenging another swimmer."
+    },
+    {
+      "id": "result",
+      "description": "A commentary segment describes final placement, medal result, or race outcome."
+    }
+  ]
+}

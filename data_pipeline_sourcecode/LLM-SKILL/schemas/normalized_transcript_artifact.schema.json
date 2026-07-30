@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://swimcomposer.example/schemas/normalized_transcript_artifact.schema.json",
+  "title": "Normalized Transcript Pipeline Artifact",
+  "type": "object",
+  "required": ["schema_version", "official_athletes", "segments"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "source_transcript": {"type": "string"},
+    "official_snapshot": {"type": "string"},
+    "official_athletes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["lane_id", "name"],
+        "properties": {
+          "lane_id": {"type": "integer"},
+          "name": {"type": "string"},
+          "country": {"type": ["string", "null"]},
+          "rank": {"type": ["integer", "null"]}
+        }
+      }
+    },
+    "segments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["segment_id", "start_sec", "end_sec", "text", "normalized_text", "mentions"],
+        "properties": {
+          "segment_id": {"type": "integer"},
+          "start_sec": {"type": "number"},
+          "end_sec": {"type": "number"},
+          "text": {"type": "string"},
+          "normalized_text": {"type": "string"},
+          "mentions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["spoken_form", "normalized_name"],
+              "properties": {
+                "spoken_form": {"type": "string"},
+                "normalized_name": {"type": "string"},
+                "lane_id": {"type": ["integer", "null"]},
+                "country": {"type": ["string", "null"]},
+                "official_rank": {"type": ["integer", "null"]},
+                "confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+                "rationale": {"type": ["string", "null"]}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

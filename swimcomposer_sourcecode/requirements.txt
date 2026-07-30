@@ -1,0 +1,2 @@
+# No third-party Python packages are required to serve the interactive demo.
+# Python 3.8+ from the standard library is sufficient.

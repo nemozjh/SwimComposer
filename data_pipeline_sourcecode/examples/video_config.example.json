@@ -1,0 +1,21 @@
+{
+  "competition_id": "swimming_competition3",
+  "fps": 50.0,
+  "total_frames": 3100,
+  "video_width": 1920,
+  "video_height": 1080,
+  "detection_start_frame": 450,
+  "bucket_size_frames": 30,
+  "smoothing_radius_frames": 2,
+  "pixels_to_meters": 0.0258,
+  "race_length_m": 100.0,
+  "elapsed_offset_sec": 4.0,
+  "direction_segments": [
+    { "start_frame": 450, "end_frame": 1511, "direction": "rtl", "base_distance_m": 0.0 },
+    { "start_frame": 1560, "end_frame": 3099, "direction": "ltr", "base_distance_m": 50.0 }
+  ],
+  "metric_validity_windows": [
+    { "start": 0.0, "end": 9.0, "reason": "prestart" },
+    { "start": 30.24, "end": 31.2, "reason": "turn" }
+  ]
+}

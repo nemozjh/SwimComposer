@@ -1,0 +1,28 @@
+Paper title:
+Authoring Narrative Visualization in Motion: Visual Storytelling in Swimming Videos
+
+Authors:
+Junhao Zhao
+Romain Vuillemot
+Petra Isenberg
+Lijie Yao
+
+Publication:
+IEEE Transactions on Visualization and Computer Graphics (TVCG)
+IEEE VIS 2026
+
+Submission track:
+Visualization / Interaction
+
+Representative reproduction:
+Launch the bundled SwimComposer interactive system and its prepared swimming-race demo.
+
+Supported operating systems:
+macOS 11 or newer
+Linux with Python 3.8 or newer and a desktop browser
+
+Verified configuration:
+macOS 26.4.1 with Chromium (July 30, 2026)
+
+Required non-standard hardware:
+None for the representative reproduction

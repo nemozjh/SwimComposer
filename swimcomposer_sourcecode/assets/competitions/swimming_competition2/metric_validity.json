@@ -1,0 +1,13 @@
+{
+  "globalInvalidWindows": [
+    {
+      "start": 0.0,
+      "end": 4.0,
+      "reason": "prestart"
+    }
+  ],
+  "notes": [
+    "Hide live data during the opening seconds where extracted values are noisy.",
+    "Elapsed Time remains exempt in the app logic."
+  ]
+}

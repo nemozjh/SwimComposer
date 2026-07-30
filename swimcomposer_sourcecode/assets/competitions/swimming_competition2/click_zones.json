@@ -1,0 +1,45 @@
+{
+  "version": 2,
+  "units": "percent-string",
+  "description": "Per-lane horizontal click zone vertical ranges. y0/y1 are percentages of video height.",
+  "debugOverlay": {
+    "enabled": false,
+    "fillAlpha": "8%",
+    "lineAlpha": "55%",
+    "lineWidth": 1.5
+  },
+  "lanes": {
+    "8": {
+      "y0": "0.0000%",
+      "y1": "12.4524%"
+    },
+    "7": {
+      "y0": "13.7230%",
+      "y1": "25.0318%"
+    },
+    "6": {
+      "y0": "26.4295%",
+      "y1": "36.9759%"
+    },
+    "5": {
+      "y0": "39.0089%",
+      "y1": "49.0470%"
+    },
+    "4": {
+      "y0": "51.3342%",
+      "y1": "62.2618%"
+    },
+    "3": {
+      "y0": "63.6595%",
+      "y1": "74.5870%"
+    },
+    "2": {
+      "y0": "75.7306%",
+      "y1": "87.1665%"
+    },
+    "1": {
+      "y0": "88.3100%",
+      "y1": "96.6866%"
+    }
+  }
+}

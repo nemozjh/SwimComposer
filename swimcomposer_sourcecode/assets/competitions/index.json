@@ -1,0 +1,18 @@
+{
+  "competitions": [
+    {
+      "id": "swimming_competition2",
+      "label": "Paris 2024 Men's 50m Freestyle Final",
+      "overlay": "./assets/competitions/swimming_competition2/overlay.json",
+      "insight": "./assets/competitions/swimming_competition2/insight.json",
+      "clickZones": "./assets/competitions/swimming_competition2/click_zones.json",
+      "metricValidity": "./assets/competitions/swimming_competition2/metric_validity.json",
+      "video": "./assets/competitions/swimming_competition2/video.mp4",
+      "midlines": {
+        "visible": true,
+        "alpha": 0.35,
+        "thickness": 2.5
+      }
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://swimcomposer.example/schemas/insight_artifact.schema.json",
+  "title": "Insight Pipeline Artifact",
+  "type": "object",
+  "required": ["schema_version", "allowed_categories", "insights"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "source_normalized_transcript": {"type": "string"},
+    "official_snapshot": {"type": "string"},
+    "allowed_categories": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "insights": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["insight_id", "source_segment_id", "category", "start_sec", "end_sec", "summary"],
+        "properties": {
+          "insight_id": {"type": "integer"},
+          "source_segment_id": {"type": ["integer", "null"]},
+          "category": {
+            "type": "string",
+            "enum": ["lead_change", "lead_status", "record_watch", "tech_review", "chase", "result"]
+          },
+          "start_sec": {"type": "number"},
+          "end_sec": {"type": "number"},
+          "summary": {"type": "string"},
+          "athletes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name"],
+              "properties": {
+                "name": {"type": "string"},
+                "lane_id": {"type": ["integer", "null"]},
+                "country": {"type": ["string", "null"]},
+                "official_rank": {"type": ["integer", "null"]}
+              }
+            }
+          },
+          "targets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name"],
+              "properties": {
+                "name": {"type": "string"},
+                "lane_id": {"type": ["integer", "null"]},
+                "country": {"type": ["string", "null"]},
+                "official_rank": {"type": ["integer", "null"]}
+              }
+            }
+          },
+          "confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1}
+        }
+      }
+    }
+  }
+}
