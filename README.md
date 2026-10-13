@@ -21,11 +21,7 @@
   <img src="https://img.shields.io/badge/IEEE_VIS-2026-0969da" alt="IEEE VIS 2026">
   <img src="https://img.shields.io/badge/status-accepted-1a7f37" alt="Accepted">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-0969da" alt="MIT License"></a>
-</p>
-
-<p align="center">
-  <a href="https://www.replicabilitystamp.org/#https-github-com-nemozjh-swimcomposer"><img src="docs/assets/grsi-stamp.png" width="64" alt="GRSI Replicability Stamp awarded"></a><br>
-  <a href="https://www.replicabilitystamp.org/#https-github-com-nemozjh-swimcomposer"><strong>GRSI Replicability Stamp awarded</strong></a>
+  <a href="https://www.replicabilitystamp.org/#https-github-com-nemozjh-swimcomposer" title="GRSI Replicability Stamp awarded"><img src="docs/assets/grsi-stamp.png" width="24" height="24" alt="GRSI Replicability Stamp awarded"></a>
 </p>
 
 <p align="center">
